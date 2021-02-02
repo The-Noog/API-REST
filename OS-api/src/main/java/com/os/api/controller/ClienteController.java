@@ -3,6 +3,8 @@ package com.os.api.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.os.domain.model.Cliente;
 import com.os.domain.repository.ClienteRepository;
+import com.os.domain.service.CadastroClienteService;
 
 @RestController
 //@RestController = Define uma classe que contém métodos para uma API RESTful
@@ -29,6 +32,10 @@ public class ClienteController {
 	@Autowired
 	// Define pontos de injeção de dependencias dentro de uma classe
 	private ClienteRepository clienteRepository;
+	
+	
+	@Autowired
+	private CadastroClienteService cadastroCliente;
 
 	@GetMapping
 	// anotação usada para mapear solicitações HTTP GET em métodos
@@ -62,19 +69,18 @@ public class ClienteController {
 
 	@PostMapping
 	// Ultilizado para fazer postagem
-
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cliente adicionar(@RequestBody Cliente cliente) {
-		return clienteRepository.save(cliente);
+	public Cliente adicionar(@Valid @RequestBody Cliente cliente) {
+		return cadastroCliente.salvar(cliente);
 	}
 
 	@PutMapping("/{clienteId}")
-	public ResponseEntity<Cliente> atualizar(@PathVariable Long clienteId, @RequestBody Cliente cliente) {
+	public ResponseEntity<Cliente> atualizar(@Valid @PathVariable Long clienteId, @RequestBody Cliente cliente) {
 		if (!clienteRepository.existsById(clienteId)) {
 			return ResponseEntity.notFound().build();
 		}
 		cliente.setId(clienteId);
-		cliente = clienteRepository.save(cliente);		
+		cliente = cadastroCliente.salvar(cliente);		
 			
 		return ResponseEntity.ok(cliente);
 		}
@@ -84,7 +90,7 @@ public class ClienteController {
 		if (!clienteRepository.existsById(clienteId)) {
 			return ResponseEntity.notFound().build();
 		}
-		clienteRepository.deleteById(clienteId);
+		cadastroCliente.excluir(clienteId);
 		return ResponseEntity.noContent().build();
 		
 		

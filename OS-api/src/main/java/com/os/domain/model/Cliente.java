@@ -4,6 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 //@Entity = Define que a classe é um entidade/model
@@ -14,8 +17,21 @@ public class Cliente {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	//@GeneratedValue = Define que a geração do valor do id da entidade será gerenciada pelo provedor de persistência (JPA)
 	private Long id;
+	
+	@NotBlank
+	// Não aceita null, nem vazio e nem espaços.
+	@Size (max = 60)
 	private String nome;
+	
+	@NotBlank
+	@Email	
+	//Anotação para saber se tem as caracteristicas de um email
+	@Size (max = 255)
 	private String email;
+	
+	@NotBlank
+	@Size(max = 20)
+	//Define o tamanho minimo, ou máximo de caractere
 	private String telefone;
 
 	public Long getId() {
